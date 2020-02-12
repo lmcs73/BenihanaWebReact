@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenihanaWebReact", "BenihanaWebReact.csproj", "{2BFB35D9-B1E6-47C5-98CD-E42DA3ACD612}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{0FB59E31-1331-41C2-809E-B0D7EA7E3CAE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2BFB35D9-B1E6-47C5-98CD-E42DA3ACD612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BFB35D9-B1E6-47C5-98CD-E42DA3ACD612}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BFB35D9-B1E6-47C5-98CD-E42DA3ACD612}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BFB35D9-B1E6-47C5-98CD-E42DA3ACD612}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FB59E31-1331-41C2-809E-B0D7EA7E3CAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FB59E31-1331-41C2-809E-B0D7EA7E3CAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FB59E31-1331-41C2-809E-B0D7EA7E3CAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FB59E31-1331-41C2-809E-B0D7EA7E3CAE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

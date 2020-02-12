@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  benihanawebreact:
+    image: ${DOCKER_REGISTRY-}benihanawebreact
+    build:
+      context: .
+      dockerfile: ./Dockerfile
