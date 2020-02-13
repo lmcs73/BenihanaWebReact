@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Benihana;
 using Coravel.Queuing.Interfaces;
+using Microsoft.AspNetCore.SignalR;
+using BenihanaWebReact.Hubs;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,9 +16,11 @@ namespace BenihanaWebReact.Controllers
     public class SimulationController : ControllerBase
     {
         private readonly IQueue _queue;
-        public SimulationController(IQueue queue)
+        private readonly IHubContext<ChatHub> _hubContext;
+        public SimulationController(IQueue queue, IHubContext<ChatHub> hubContext)
         {
             _queue = queue;
+            _hubContext = hubContext;
         }
         // GET: api/values
         [HttpGet]
@@ -34,8 +38,9 @@ namespace BenihanaWebReact.Controllers
 
         // POST api/values
         [HttpPost]
-        public IActionResult Post([FromBody]SimulationConfig config)
+        public async Task<IActionResult> Post([FromBody]SimulationConfig config)
         {
+            await _hubContext.Clients.All.SendAsync("setClientMessage", "Run simulation");
             Model.Statics statics = MapConfig(config);
 
             List<Result> result = Enumerable.Range(0, 20).Select(seed =>
@@ -96,7 +101,7 @@ namespace BenihanaWebReact.Controllers
             {
                 model.WriteToConsole();
                 await Task.Delay(1000);
-            } while (model.Run(TimeSpan.FromMilliseconds(10)));
+            } while (model.Run(TimeSpan.FromHours(1)));
             Console.WriteLine("finished running sim");
         }
     }
