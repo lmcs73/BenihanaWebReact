@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using BenihanaWebReact.Hubs;
-using Microsoft.AspNetCore.HttpOverrides;
 
 namespace BenihanaWebReact
 {
@@ -23,14 +21,9 @@ namespace BenihanaWebReact
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-            });
+
             services.AddControllersWithViews();
             services.AddQueue();
-            services.AddSignalR();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -64,7 +57,6 @@ namespace BenihanaWebReact
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapHub<ChatHub>("/chatHub");
             });
 
             app.UseSpa(spa =>
