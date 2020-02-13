@@ -1,6 +1,7 @@
 import React from "react";
+import { withRouter } from 'react-router-dom';
 
-export const ResultTable = props => {
+const ResultTable = props => {
   let averageBar = 0;
   let averageDinner = 0;
   let averageRevenue = 0;
@@ -29,7 +30,7 @@ export const ResultTable = props => {
   }
 
   const handleRun = index => {
-    props.onPlaySimulation(index);
+    props.history.push(`/run/${index}`);
   };
 
   return (
@@ -80,3 +81,5 @@ export const ResultTable = props => {
     </table>
   );
 };
+
+export default withRouter(ResultTable);

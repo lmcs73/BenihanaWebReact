@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Configuration } from "./Configuration.js";
 import { LoadingDots } from "./LoadingDots";
-import { ResultTable } from "./ResultTable";
+import ResultTable  from "./ResultTable";
 import axios from "axios";
 
 export const Home = () => {
