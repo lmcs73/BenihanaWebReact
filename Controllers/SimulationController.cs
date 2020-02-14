@@ -54,20 +54,41 @@ namespace BenihanaWebReact.Controllers
             return Ok(result);
         }
         [HttpPost("run/{id}")]
-        public IActionResult RunSimulation(int id, [FromBody]RunSimulationModel simulation)
+        public async Task<IActionResult> RunSimulation(int id, [FromBody]RunSimulationModel simulation)
         {       
-            _queue.QueueAsyncTask(async () =>
+            //_queue.QueueAsyncTask(async () =>
+            //{
+            //    await Task.Run(async () =>
+            //     {
+            //         await _hubContext.Clients.Client(simulation.ConnectionId).SendAsync("setSimulationResults", "testing");
+            //         Model.Statics scenario = MapConfig(simulation.Config);
+            //         Model model = new Model(scenario, seed: id);
+            //         model.WarmUp(TimeSpan.FromHours(scenario.OpeningHour));
+            //         await  RunSimulationAsync(model, simulation.ConnectionId);
+            //     });
+            //});
+            //await _hubContext.Clients.Client(simulation.ConnectionId).SendAsync("setSimulationResults", "testing");
+            Model.Statics scenario = MapConfig(simulation.Config);
+            Model model = new Model(scenario, seed: id);
+            model.WarmUp(TimeSpan.FromHours(scenario.OpeningHour));
+            Console.WriteLine("running sim for 10 seconds");
+            //List<ResultModel> results = new List<ResultModel>();
+            List<Result> results = new List<Result>();
+            do
             {
-                await Task.Run(async () =>
-                 {
-                     await _hubContext.Clients.Client(simulation.ConnectionId).SendAsync("setSimulationResults", "testing");
-                     Model.Statics scenario = MapConfig(simulation.Config);
-                     Model model = new Model(scenario, seed: id);
-                     model.WarmUp(TimeSpan.FromHours(scenario.OpeningHour));
-                     await  RunSimulationAsync(model, simulation.ConnectionId);
-                 });
-            });
-            return Ok("Ok");
+                model.WriteToConsole();
+                //ResultModel result = new ResultModel();
+                //result.BarAvgCust = model.Result.BarAvgCust;
+                //result.BarAvgDrinksPerCust = model.Result.BarAvgDrinksPerCust;
+                //result.BarDrinksSold = model.Result.BarDrinksSold;
+                results.Add(model.Result);
+                await Task.Delay(500); ;
+            } while (model.Run(TimeSpan.FromHours(1)));
+            //string messageString = JsonSerializer.Serialize(results);
+            //Console.WriteLine(messageString);
+            //await _hubContext.Clients.Client(simulation.ConnectionId).SendAsync("setSimulationResults", messageString);
+            //Console.WriteLine("finished running sim");
+            return Ok(results);
         }
 
         // PUT api/values/5

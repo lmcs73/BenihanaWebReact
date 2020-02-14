@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Route } from "react-router";
 import { Layout } from "./components/Layout";
 import { Home } from "./components/Home";
-import { RunSimulation } from "./components/RunSimulation";
+// import { RunSimulation } from "./components/RunSimulation";
 import * as signalR from "@microsoft/signalr";
 
 import "./custom.css";
@@ -51,12 +51,12 @@ export default class App extends Component {
     return (
       <Layout>
         <Route exact path="/" component={Home} />
-        <Route
+        {/* <Route
           path="/run/:id"
           render={(props) => (
             <RunSimulation {...props} hubConnection={this.state.hubConnection} />
           )}
-        />
+        /> */}
       </Layout>
     );
   }
