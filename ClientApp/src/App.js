@@ -10,6 +10,13 @@ import "./custom.css";
 export default class App extends Component {
   static displayName = App.name;
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      hubConnection: ""
+    };
+  }
+
   componentDidMount() {
     const hubConnection = new signalR.HubConnectionBuilder()
       .withUrl("/chatHub")
@@ -25,11 +32,18 @@ export default class App extends Component {
             "sendConnectionId",
             hubConnection.connectionId
           );
+          localStorage.setItem(
+            "signalRConnectionId",
+            hubConnection.connectionId
+          );
         })
         .catch(() => console.log("Error while establishing connection"));
       this.state.hubConnection.on("setClientMessage", data => {
         console.log(data);
       });
+      // this.state.hubConnection.on("setSimulationResults", results => {
+      //   console.log(`Received simulation results ${results}`);
+      // });
     });
   }
 
@@ -37,7 +51,12 @@ export default class App extends Component {
     return (
       <Layout>
         <Route exact path="/" component={Home} />
-        <Route path="/run/:id" component={RunSimulation} />
+        <Route
+          path="/run/:id"
+          render={(props) => (
+            <RunSimulation {...props} hubConnection={this.state.hubConnection} />
+          )}
+        />
       </Layout>
     );
   }

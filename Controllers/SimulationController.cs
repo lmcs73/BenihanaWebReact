@@ -7,6 +7,8 @@ using Benihana;
 using Coravel.Queuing.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using BenihanaWebReact.Hubs;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -52,16 +54,17 @@ namespace BenihanaWebReact.Controllers
             return Ok(result);
         }
         [HttpPost("run/{id}")]
-        public IActionResult RunSimulation(int id, [FromBody]SimulationConfig config)
-        {
+        public IActionResult RunSimulation(int id, [FromBody]RunSimulationModel simulation)
+        {       
             _queue.QueueAsyncTask(async () =>
             {
                 await Task.Run(async () =>
                  {
-                     Model.Statics scenario = MapConfig(config);
+                     await _hubContext.Clients.Client(simulation.ConnectionId).SendAsync("setSimulationResults", "testing");
+                     Model.Statics scenario = MapConfig(simulation.Config);
                      Model model = new Model(scenario, seed: id);
                      model.WarmUp(TimeSpan.FromHours(scenario.OpeningHour));
-                     await  RunSimulationAsync(model);
+                     await  RunSimulationAsync(model, simulation.ConnectionId);
                  });
             });
             return Ok("Ok");
@@ -94,14 +97,24 @@ namespace BenihanaWebReact.Controllers
             return statics;
         }
 
-        private async Task RunSimulationAsync(Model model)
+        private async Task RunSimulationAsync(Model model, string connectionId)
         {
             Console.WriteLine("running sim for 10 seconds");
+            List<ResultModel> results = new List<ResultModel>();
             do
             {
                 model.WriteToConsole();
-                await Task.Delay(1000);
+                ResultModel result = new ResultModel();
+                result.BarAvgCust = model.Result.BarAvgCust;
+                result.BarAvgDrinksPerCust = model.Result.BarAvgDrinksPerCust;
+                result.BarDrinksSold = model.Result.BarDrinksSold;
+
+                results.Add(result);
+                await Task.Delay(1000); ;
             } while (model.Run(TimeSpan.FromHours(1)));
+            string messageString = JsonSerializer.Serialize(results);
+            Console.WriteLine(messageString);
+            await _hubContext.Clients.Client(connectionId).SendAsync("setSimulationResults", messageString);
             Console.WriteLine("finished running sim");
         }
     }

@@ -1,5 +1,6 @@
 import React from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
+import axios from "axios";
 
 const ResultTable = props => {
   let averageBar = 0;
@@ -29,7 +30,13 @@ const ResultTable = props => {
     averageProfit = profitSum / resultLength;
   }
 
-  const handleRun = index => {
+  const handleRun = async index => {
+    let config = JSON.parse(localStorage.getItem("config"));
+    let connectionId = localStorage.getItem("signalRConnectionId");
+    let payload = { config, connectionId };
+    await axios.post(`api/simulation/run/${index}`, payload, {
+      headers: { "Content-Type": "application/json" }
+    });
     props.history.push(`/run/${index}`);
   };
 
