@@ -45,7 +45,12 @@ export const Home = () => {
   let body;
 
   if (playSimulationResult !== null) {
-    body = <RunSimulation result ={playSimulationResult} onClose={handleCloseSimulation} />;
+    body = (
+      <RunSimulation
+        result={playSimulationResult}
+        onClose={handleCloseSimulation}
+      />
+    );
   } else {
     body = (
       <div>
